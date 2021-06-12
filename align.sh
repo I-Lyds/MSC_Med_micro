@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Create loop for 
 while read p
 do
 file=$p
@@ -11,19 +12,19 @@ echo ${file2}
 STAR --runThreadN 40 \
 --runMode alignReads \
 --readFilesCommand zcat \
---genomeDir IGH_out \
+--genomeDir Genome_dir \
 --readFilesIn /path/to/file/${file} /path/to/file/${file2} \
 --outSAMtype BAM Unsorted \
---outFileNamePrefix /path/to/directory/${file%.fastq.gz}.us.bam \
+--outFileNamePrefix /path/to/Genome_dir/directory/${file%.fastq.gz}.bam \
 
-done <IGH.txt
+done <listoffastqfiles.txt
 
-for file in /data/campbell/projects/Msc90gnms/bwa_alnmt/sam_files/star_out/IGH_str_bams/*.us.bamAligned.out.bam
+for file in /path/to/Genome_dir/*.bamAligned.out.bam
 do
-samtools sort -@ 40 -O bam -T tmp ${file} -o ${file%%.us.bamAligned.out.bam}.bam
+samtools sort -@ 40 -O bam -T tmp ${file} -o ${file%%.us.bamAligned.out.bam}.sorted.bam
 done
 
-for file in /data/campbell/projects/Msc90gnms/bwa_alnmt/sam_files/star_out/IGH_str_bams/*_1.bam
+for file in /path/to/Genome_dir/*sorted.bam
 do
-samtools depth ${file} > /data/campbell/projects/Msc90gnms/bwa_alnmt/sam_files/star_out/IGH_str_bams/plotdpth/${file}.csv
+samtools depth ${file} > /path/to/Genome_dir/${file}.csv
 done
