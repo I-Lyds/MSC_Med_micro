@@ -5,7 +5,7 @@ while read p
 do
 cd ${p%%1.bam.csv}
 
-Rscript --slave /path/to/R/script/Normalise_CN.R
+Rscript --slave /path/to/R/script/Normalise_RD.R
 
 cd ..
 
