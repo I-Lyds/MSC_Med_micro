@@ -1,0 +1,2 @@
+        gene_means3 <- gene_means2[,c("Gene","Depth")]
+        write.table(gene_means3, file = "gene_num.csv", append = FALSE, sep = " ", dec = ".", row.names = FALSE, col.names = TRUE)
