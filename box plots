@@ -1,2 +1,29 @@
-        gene_means3 <- gene_means2[,c("Gene","Depth")]
-        write.table(gene_means3, file = "gene_num.csv", append = FALSE, sep = " ", dec = ".", row.names = FALSE, col.names = TRUE)
+#Load dependancies
+library(tidyverse)
+library(dplyr)
+library(plyr)
+library(ggplot2)
+
+# Set working environment
+getwd()
+# Load reference gene data for expected coverage calculations
+refgene <- read.csv("IGH.ref.csv", stringsAsFactors = FALSE, header = FALSE, sep = "\t")[ ,2:3]
+# Load annotated read depth data
+gene_annotated <- read.csv("gene_annotated_positions.bed", stringsAsFactors = FALSE, header = FALSE, sep = "\t")
+# Use aggregate function to rearrange data according to the mean coverage of given gene coordinates
+gene_means <- aggregate(.~ V4, mean, data=gene_annotated)
+colnames(gene_means)=c("Gene","chr","Position","Depth")
+# Calculate expected depth using average the coverage of reference gene
+avgval<- group_by(refgene, V3) %>% summarize(m = mean(V3))
+refavg<- avgval$m
+# Create division function
+division <- function(x) {
+x /  refavg}
+# Duplicate dataframe with normalised copy number (CN) values
+gene_means2 <- gene_means
+gene_means2$CN <- gene_means2$Depth/refavg
+
+# Write normalised gene copy number data to table 
+gene_means3 <- gene_means2[,c("Gene","CN")]
+write.table(gene_means3, file = "gene_num.csv", append = FALSE, sep = " ", dec = ".", row.names = FALSE, col.names = TRUE)
+
